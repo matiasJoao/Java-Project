@@ -1,9 +1,13 @@
 package com.Project.Project.Business;
 
+
+import com.Project.Project.Business.CpfValidator.CpfValidator;
 import com.Project.Project.Business.Regex.RegexHelpers;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DataAcess.UserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +22,8 @@ public class UserService {
     public String verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
 
         Boolean verifyEmail, verifyCpf, verifyName, verifySenha;
-        String msg;
+        String msg, pass;
+
 
         RegexHelpers regexHelpers = new RegexHelpers();
 
@@ -29,8 +34,18 @@ public class UserService {
 
 
         if(verifyEmail && verifyCpf && verifyName && verifySenha){
-            msg = "Cadastrado com sucesso";
-            userInterface.save(user);
+            CpfValidator cpfValidator = new CpfValidator();
+            Boolean verify = cpfValidator.Cpfvalido(cpf);
+                if(verify){
+                    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    pass = passwordEncoder.encode(user.getSenha());
+                    user.setSenha(pass);
+                    userInterface.save(user);
+                    msg = "Cadastrado com sucesso";
+                }
+                else{
+                    msg = "cpf invalido";
+                }
         }
         else {
             msg = "Email invalido ou Cpf invalido ou Nome invalido ou padrao de senha incorreta \n tem que conter um simbolo especia uma letra maiuscula e um numero";
