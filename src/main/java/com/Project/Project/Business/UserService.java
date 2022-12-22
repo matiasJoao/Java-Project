@@ -5,7 +5,10 @@ import com.Project.Project.Business.CpfValidator.CpfValidator;
 import com.Project.Project.Business.Regex.RegexHelpers;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DataAcess.UserInterface;
+import com.Project.Project.ResponseHandler.DeleteValidationResponse;
+import com.Project.Project.ResponseHandler.UserValidationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,11 @@ public class UserService {
     @Autowired
     private UserInterface userInterface;
 
-    public String verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
+    public UserValidationResponse verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
 
         Boolean verifyEmail, verifyCpf, verifyName, verifySenha;
-        String msg, pass;
-
+        String  pass;
+        UserValidationResponse userValidationResponse;
 
         RegexHelpers regexHelpers = new RegexHelpers();
 
@@ -41,17 +44,20 @@ public class UserService {
                     pass = passwordEncoder.encode(user.getSenha());
                     user.setSenha(pass);
                     userInterface.save(user);
-                    msg = "Cadastrado com sucesso";
+                    userValidationResponse = new UserValidationResponse("201", "Cadastrado", HttpStatus.CREATED);
+                    return userValidationResponse;
+
                 }
                 else{
-                    msg = "cpf invalido";
+                    userValidationResponse = new UserValidationResponse("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
+                    return userValidationResponse;
                 }
         }
         else {
-            msg = "Email invalido ou Cpf invalido ou Nome invalido ou padrao de senha incorreta \n tem que conter um simbolo especia uma letra maiuscula e um numero";
+           userValidationResponse = new UserValidationResponse("400", "USUARIO OU EMAIL OU SENHA OU CPF INVALIDO", HttpStatus.BAD_REQUEST );
+            return userValidationResponse;
         }
 
-        return msg;
     }
 
     public List<User> ListClients(){
@@ -63,9 +69,12 @@ public class UserService {
     public User UpdateById(Long id, User user){
         return userInterface.save(user);
     }
-    public String  delete(Long id){
+    public DeleteValidationResponse delete(Long id){
         userInterface.deleteById(id);
-        String msg = "deletado com sucesso";
-        return msg;
+        DeleteValidationResponse deleteValidationResponse = new DeleteValidationResponse("200", "Deletado", HttpStatus.OK);
+        return deleteValidationResponse;
+    }
+    public User save(User user){
+        return userInterface.save(user);
     }
 }
