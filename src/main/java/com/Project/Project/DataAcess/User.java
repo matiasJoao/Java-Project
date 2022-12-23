@@ -18,7 +18,7 @@ public class User {
 
 
         @ManyToOne
-        @JoinColumn(name = "depart_id")
+        @JoinColumn(name = "depart_id", nullable = false)
         private Depart depart;
 
         @Column(name = "tb_nome", nullable = false)
@@ -27,10 +27,10 @@ public class User {
         @Column(name = "tb_email", nullable = false)
         private String email;
 
-        @Column(name = "tb_senha")
+        @Column(name = "tb_senha", nullable = false)
         private String senha;
 
-        @Column(name = "tb_cpf", unique=true)
+        @Column(name = "tb_cpf", nullable = false)
         private String cpf;
 
 }

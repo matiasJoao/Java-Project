@@ -2,8 +2,7 @@ package com.Project.Project.app;
 
 import com.Project.Project.Business.UserService;
 import com.Project.Project.DataAcess.User;
-import com.Project.Project.ResponseHandler.DeleteValidationResponse;
-import com.Project.Project.ResponseHandler.UserValidationResponse;
+import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -20,12 +18,12 @@ public class UserController {
     private UserService userService;
     @PostMapping
     @RequestMapping("/user/cadastro")
-    public UserValidationResponse cadastro(@RequestBody User user) {
+    public ResponseJSONhandler cadastro(@RequestBody User user) {
         String email = user.getEmail();
         String nome = user.getName();
         String cpf = user.getCpf();
         String senha = user.getSenha();
-        return  userService.verifyEmailCpfNameSenha(email, cpf, nome, senha, user);
+        return userService.verifyEmailCpfNameSenha(email, cpf, nome, senha, user);
     }
 
     @GetMapping
@@ -38,7 +36,7 @@ public class UserController {
     @RequestMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User FindId(@PathVariable Long id){
-        return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found"));
+        return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
     }
     @PutMapping("/user/update/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -57,7 +55,7 @@ public class UserController {
     }
     @DeleteMapping("/user/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DeleteValidationResponse delete (@PathVariable Long id){
+    public ResponseJSONhandler delete (@PathVariable Long id){
         FindId(id);
         return userService.delete(id);
     }

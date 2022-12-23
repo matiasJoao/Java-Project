@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @Data
-public class UserValidationResponse {
+public class ResponseJSONhandler {
     private String cod;
     private String mensage;
     private HttpStatus httpStatus;
