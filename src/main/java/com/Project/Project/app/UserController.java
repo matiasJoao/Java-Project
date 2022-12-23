@@ -3,8 +3,10 @@ package com.Project.Project.app;
 import com.Project.Project.Business.UserService;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class UserController {
     private UserService userService;
     @PostMapping
     @RequestMapping("/user/cadastro")
-    public ResponseJSONhandler cadastro(@RequestBody User user) {
+    public ResponseEntity cadastro(@RequestBody @Valid User user) {
         String email = user.getEmail();
         String nome = user.getName();
         String cpf = user.getCpf();

@@ -1,6 +1,7 @@
 package com.Project.Project.DataAcess;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,15 +23,19 @@ public class User {
         private Depart depart;
 
         @Column(name = "tb_nome", nullable = false)
+        @NotBlank
         private String name;
 
         @Column(name = "tb_email", nullable = false)
+        @NotBlank
         private String email;
 
         @Column(name = "tb_senha", nullable = false)
+        @NotBlank
         private String senha;
 
         @Column(name = "tb_cpf", nullable = false)
+        @NotBlank
         private String cpf;
 
 }

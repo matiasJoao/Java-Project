@@ -6,9 +6,9 @@ import com.Project.Project.Business.Regex.RegexHelpers;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DataAcess.UserInterface;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
-import com.Project.Project.ResponseHandler.UserValidationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UserService {
     @Autowired
     private UserInterface userInterface;
 
-    public ResponseJSONhandler verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
+    public ResponseEntity verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
            Boolean verifyEmail, verifyCpf, verifyName, verifySenha;
            String pass;
            ResponseJSONhandler responseJSONhandler;
@@ -44,16 +44,16 @@ public class UserService {
                    user.setSenha(pass);
                    userInterface.save(user);
                    responseJSONhandler = new ResponseJSONhandler("201", "Cadastrado", HttpStatus.CREATED);
-                   return responseJSONhandler;
+                   return ResponseEntity.status(HttpStatus.CREATED).body(responseJSONhandler);
 
                } else {
                    responseJSONhandler = new ResponseJSONhandler("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
-                   return responseJSONhandler;
+                   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler);
                }
            }
            else {
                responseJSONhandler = new ResponseJSONhandler("400", "USUARIO OU EMAIL OU SENHA INVALIDOS", HttpStatus.BAD_REQUEST);
-               return responseJSONhandler;
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler);
            }
     }
 
