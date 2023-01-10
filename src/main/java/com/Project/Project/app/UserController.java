@@ -40,6 +40,12 @@ public class UserController {
     public User FindId(@PathVariable Long id){
         return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
     }
+
+    @GetMapping
+    @RequestMapping("/user/login/{email}/password/{senha}")
+    public ResponseEntity loginUser(@PathVariable("email") String email, @PathVariable("senha") String senha ){
+         return userService.loginClient(email, senha);
+    }
     @PutMapping("/user/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User Update(@PathVariable("id") Long id, @RequestBody User user) {
