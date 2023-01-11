@@ -82,7 +82,7 @@ public class UserService {
         Boolean verifyPassword = passwordEncoder.matches(senha, user.getSenha());
 
         if(user != null && verifyPassword ){
-            UserLoginDTO userLoginDTO = new UserLoginDTO(user.getName(), user.getEmail(), user.getDepart());
+            UserLoginDTO userLoginDTO = new UserLoginDTO(user.getName(), user.getEmail(), user.getSenha(), user.getDepart());
             return ResponseEntity.status(HttpStatus.OK).body(userLoginDTO);
         }
        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseJSONhandler("404", "Email ou senha invalidas", HttpStatus.NOT_FOUND));
