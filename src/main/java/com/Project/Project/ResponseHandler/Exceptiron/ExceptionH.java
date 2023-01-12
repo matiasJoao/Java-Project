@@ -2,7 +2,7 @@ package com.Project.Project.ResponseHandler.Exceptiron;
 
 
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
-import jakarta.validation.ConstraintViolationException;
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

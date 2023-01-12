@@ -5,6 +5,9 @@ import com.Project.Project.Business.CpfValidator.CpfValidator;
 import com.Project.Project.Business.Regex.RegexHelpers;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DataAcess.UserInterface;
+import com.Project.Project.DataAcess.FeingRepository;
+import com.Project.Project.ResponseHandler.DTO.TokenDTO;
+import com.Project.Project.ResponseHandler.DTO.TokenGlobalDTO;
 import com.Project.Project.ResponseHandler.DTO.UserLoginDTO;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +26,18 @@ public class UserService {
     @Autowired
     private UserInterface userInterface;
 
+    @Autowired
+    private FeingRepository feingRepository;
+
+
     public ResponseEntity verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
            Boolean verifyEmail, verifyCpf, verifyName, verifySenha;
            String pass;
            ResponseJSONhandler responseJSONhandler;
 
            RegexHelpers regexHelpers = new RegexHelpers();
+
+
 
            verifyName = regexHelpers.nomeValidation(name);
            verifyEmail = regexHelpers.email(email);
@@ -76,16 +85,23 @@ public class UserService {
         return userInterface.save(user);
     }
 
-    public ResponseEntity loginClient(String email, String senha){
+    public TokenDTO loginClient(String email, String senha){
         User user = userInterface.findByEmail(email);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Boolean verifyPassword = passwordEncoder.matches(senha, user.getSenha());
 
         if(user != null && verifyPassword ){
             UserLoginDTO userLoginDTO = new UserLoginDTO(user.getName(), user.getEmail(), user.getSenha(), user.getDepart());
-            return ResponseEntity.status(HttpStatus.OK).body(userLoginDTO);
+
+            TokenDTO tokenDTO = feingRepository.getUser(userLoginDTO);
+            TokenGlobalDTO tokenGlobalDTO = new TokenGlobalDTO(tokenDTO.getToken());
+            authToken(tokenGlobalDTO.getToken());
+            return tokenDTO;
         }
-       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseJSONhandler("404", "Email ou senha invalidas", HttpStatus.NOT_FOUND));
+       throw  new RuntimeException("deu ruim");
+
+    }
+    public Boolean authToken(String token){
 
     }
 }

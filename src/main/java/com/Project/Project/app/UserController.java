@@ -2,8 +2,10 @@ package com.Project.Project.app;
 
 import com.Project.Project.Business.UserService;
 import com.Project.Project.DataAcess.User;
+import com.Project.Project.ResponseHandler.DTO.TokenDTO;
+import com.Project.Project.ResponseHandler.DTO.UserDTO;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +44,9 @@ public class UserController {
     }
 
     @GetMapping
-    @RequestMapping("/user/login/{email}/password/{senha}")
-    public ResponseEntity loginUser(@PathVariable("email") String email, @PathVariable("senha") String senha ){
-         return userService.loginClient(email, senha);
+    @RequestMapping("/user/login")
+    public TokenDTO loginUser(@RequestBody UserDTO userDTO ){
+         return userService.loginClient(userDTO.getEmail(), userDTO.getSenha());
     }
     @PutMapping("/user/update/{id}")
     @ResponseStatus(HttpStatus.OK)
