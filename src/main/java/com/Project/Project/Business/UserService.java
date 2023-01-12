@@ -8,6 +8,7 @@ import com.Project.Project.DataAcess.UserInterface;
 import com.Project.Project.DataAcess.FeingRepository;
 import com.Project.Project.ResponseHandler.DTO.TokenDTO;
 import com.Project.Project.ResponseHandler.DTO.TokenGlobalDTO;
+import com.Project.Project.ResponseHandler.DTO.UserDTO;
 import com.Project.Project.ResponseHandler.DTO.UserLoginDTO;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,23 +86,29 @@ public class UserService {
         return userInterface.save(user);
     }
 
-    public TokenDTO loginClient(String email, String senha){
-        User user = userInterface.findByEmail(email);
+    public TokenDTO loginClient(UserDTO userDTO){
+        User user = userInterface.findByEmail(userDTO.getEmail());
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Boolean verifyPassword = passwordEncoder.matches(senha, user.getSenha());
+        Boolean verifyPassword = passwordEncoder.matches(userDTO.getSenha(), user.getSenha());
 
         if(user != null && verifyPassword ){
             UserLoginDTO userLoginDTO = new UserLoginDTO(user.getName(), user.getEmail(), user.getSenha(), user.getDepart());
 
             TokenDTO tokenDTO = feingRepository.getUser(userLoginDTO);
-            TokenGlobalDTO tokenGlobalDTO = new TokenGlobalDTO(tokenDTO.getToken());
-            authToken(tokenGlobalDTO.getToken());
+
             return tokenDTO;
         }
        throw  new RuntimeException("deu ruim");
 
     }
-    public Boolean authToken(String token){
+    public Boolean tokenValdition(String tkn){
+        return feingRepository.tokenValidation(tkn);
+    }
+    public String tokenTypeUser(String tkn){
+        return feingRepository.tokenTypeUser(tkn);
+    }
 
     }
-}
+
+
+

@@ -7,6 +7,7 @@ import com.Project.Project.ResponseHandler.DTO.UserDTO;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,8 +34,17 @@ public class UserController {
     @GetMapping
     @RequestMapping("/users-list")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> ListUser(){
-        return userService.ListClients();
+    public List<User> ListUser(@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
+        if(userService.tokenValdition(tkn)){
+
+                if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente")){
+                    throw new RuntimeException("Acesso Invalido");
+                }
+
+            return userService.ListClients();
+        }
+
+        throw new RuntimeException("Token invalido ");
     }
     @GetMapping
     @RequestMapping("/user/{id}")
@@ -46,7 +56,7 @@ public class UserController {
     @GetMapping
     @RequestMapping("/user/login")
     public TokenDTO loginUser(@RequestBody UserDTO userDTO ){
-         return userService.loginClient(userDTO.getEmail(), userDTO.getSenha());
+         return userService.loginClient(userDTO);
     }
     @PutMapping("/user/update/{id}")
     @ResponseStatus(HttpStatus.OK)

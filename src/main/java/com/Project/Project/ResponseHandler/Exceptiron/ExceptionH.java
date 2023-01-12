@@ -38,4 +38,9 @@ public class ExceptionH extends ResponseEntityExceptionHandler {
         ResponseJSONhandler error = new ResponseJSONhandler("500", "INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handlerRunTimeE(RuntimeException e){
+        ResponseJSONhandler error = new ResponseJSONhandler("400", e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+    }
 }
