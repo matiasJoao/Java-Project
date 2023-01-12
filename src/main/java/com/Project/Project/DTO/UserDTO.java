@@ -1,4 +1,5 @@
-package com.Project.Project.ResponseHandler.DTO;
+package com.Project.Project.DTO;
+import com.Project.Project.DataAcess.Depart;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

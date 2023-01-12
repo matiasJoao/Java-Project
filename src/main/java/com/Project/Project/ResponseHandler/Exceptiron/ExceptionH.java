@@ -40,7 +40,7 @@ public class ExceptionH extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handlerRunTimeE(RuntimeException e){
-        ResponseJSONhandler error = new ResponseJSONhandler("400", e.getMessage(), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+        ResponseJSONhandler error = new ResponseJSONhandler("401", e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
     }
 }

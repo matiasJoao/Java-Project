@@ -1,4 +1,4 @@
-package com.Project.Project.ResponseHandler.DTO;
+package com.Project.Project.DTO;
 
 
 import lombok.AllArgsConstructor;
