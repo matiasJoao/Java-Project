@@ -42,8 +42,8 @@ public class ExceptionH extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handlerRunTimeE(RuntimeException e){
-        ResponseJSONhandler error = new ResponseJSONhandler("401", e.getMessage(), HttpStatus.UNAUTHORIZED);
-        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+        ResponseJSONhandler error = new ResponseJSONhandler("404", "Usuario Nao encontrado", HttpStatus.NOT_FOUND);
+        return new ResponseEntity(error, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(FeignException.class)
     public ResponseEntity FeingExceptionHandler(FeignException e){
@@ -54,6 +54,11 @@ public class ExceptionH extends ResponseEntityExceptionHandler {
     public ResponseEntity ForbindHandler(Forbiden e){
         ResponseJSONhandler error = new ResponseJSONhandler("403", "Acesso Invaldio", HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(Unauthorized.class)
+    public ResponseEntity UnauthorizedHandler(Unauthorized e){
+        ResponseJSONhandler error = new ResponseJSONhandler("401", "Token Invalido", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
 }

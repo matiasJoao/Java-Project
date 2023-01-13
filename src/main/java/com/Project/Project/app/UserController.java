@@ -5,6 +5,7 @@ import com.Project.Project.Business.UserService;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DTO.UserLoginDTO;
 import com.Project.Project.ResponseHandler.Exceptiron.Forbiden;
+import com.Project.Project.ResponseHandler.Exceptiron.Unauthorized;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserController {
             }
             return userService.verifyEmailCpfNameSenha(user.getEmail(), user.getCpf(), user.getName(), user.getSenha(), user);
         }
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
 
     @GetMapping
@@ -51,7 +52,7 @@ public class UserController {
             return userService.ListClients();
         }
 
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
     @GetMapping
     @RequestMapping("/user/{id}")
@@ -63,7 +64,7 @@ public class UserController {
             }
             return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         }
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
 
     @GetMapping
@@ -84,7 +85,7 @@ public class UserController {
             user.setSenha(pass);
             return userService.UpdateById(id, user);
         }
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
     @PatchMapping("/user/updateEmail/{id}/{email}")
     public User UpdateEmail(@PathVariable("id") Long id, @PathVariable("email") String email, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
@@ -92,11 +93,11 @@ public class UserController {
             if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
                 throw new Forbiden();
             }
-            User user = FindId(id, null);
+            User user = FindId(id, tkn);
             user.setEmail(email);
             return userService.save(user);
         }
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
     @DeleteMapping("/user/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -109,7 +110,7 @@ public class UserController {
             userService.delete(id);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-        throw new RuntimeException("Token invalido ");
+        throw new Unauthorized();
     }
 
 
