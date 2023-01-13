@@ -1,8 +1,10 @@
 package com.Project.Project.app;
 
+import com.Project.Project.Business.FeingService;
 import com.Project.Project.Business.UserService;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DTO.UserLoginDTO;
+import com.Project.Project.ResponseHandler.Exceptiron.Forbiden;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,16 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    FeingService feingService;
     @PostMapping
     @RequestMapping("/user/cadastro")
     public ResponseEntity cadastro(@RequestBody @Valid User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
-        if(userService.tokenValdition(tkn)){
+        if(feingService.tokenValdition(tkn)){
 
-            if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                throw new RuntimeException("Acesso Invalido");
+            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                throw new Forbiden();
             }
             return userService.verifyEmailCpfNameSenha(user.getEmail(), user.getCpf(), user.getName(), user.getSenha(), user);
         }
@@ -37,10 +42,10 @@ public class UserController {
     @RequestMapping("/users-list")
     @ResponseStatus(HttpStatus.OK)
     public List<User> ListUser(@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
-        if(userService.tokenValdition(tkn)){
+        if(feingService.tokenValdition(tkn)){
 
-                if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                    throw new RuntimeException("Acesso Invalido");
+                if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                    throw new Forbiden();
                 }
 
             return userService.ListClients();
@@ -52,9 +57,9 @@ public class UserController {
     @RequestMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User FindId(@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
-        if(userService.tokenValdition(tkn)){
-            if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                throw new RuntimeException("Acesso Invalido");
+        if(feingService.tokenValdition(tkn)){
+            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                throw new Forbiden();
             }
             return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         }
@@ -69,9 +74,9 @@ public class UserController {
     @PutMapping("/user/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User Update(@PathVariable("id") Long id, @RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
-        if(userService.tokenValdition(tkn)){
-            if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                throw new RuntimeException("Acesso Invalido");
+        if(feingService.tokenValdition(tkn)){
+            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                throw new Forbiden();
             }
             String pass;
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -83,9 +88,9 @@ public class UserController {
     }
     @PatchMapping("/user/updateEmail/{id}/{email}")
     public User UpdateEmail(@PathVariable("id") Long id, @PathVariable("email") String email, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
-        if(userService.tokenValdition(tkn)){
-            if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                throw new RuntimeException("Acesso Invalido");
+        if(feingService.tokenValdition(tkn)){
+            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                throw new Forbiden();
             }
             User user = FindId(id, null);
             user.setEmail(email);
@@ -95,13 +100,14 @@ public class UserController {
     }
     @DeleteMapping("/user/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseJSONhandler delete (@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
-        if(userService.tokenValdition(tkn)){
-            if(userService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || userService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
-                throw new RuntimeException("Acesso Invalido");
+    public ResponseEntity delete (@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
+        if(feingService.tokenValdition(tkn)){
+            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                throw new Forbiden();
             }
-            FindId(id, null);
-            return userService.delete(id);
+            FindId(id, tkn);
+            userService.delete(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
         throw new RuntimeException("Token invalido ");
     }

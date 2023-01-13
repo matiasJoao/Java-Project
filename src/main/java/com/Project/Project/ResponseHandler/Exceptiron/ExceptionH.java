@@ -3,6 +3,8 @@ package com.Project.Project.ResponseHandler.Exceptiron;
 
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import javax.validation.ConstraintViolationException;
+
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -43,4 +45,15 @@ public class ExceptionH extends ResponseEntityExceptionHandler {
         ResponseJSONhandler error = new ResponseJSONhandler("401", e.getMessage(), HttpStatus.UNAUTHORIZED);
         return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity FeingExceptionHandler(FeignException e){
+        ResponseJSONhandler error = new ResponseJSONhandler("401", "Token Invalido", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(Forbiden.class)
+    public ResponseEntity ForbindHandler(Forbiden e){
+        ResponseJSONhandler error = new ResponseJSONhandler("403", "Acesso Invaldio", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
 }

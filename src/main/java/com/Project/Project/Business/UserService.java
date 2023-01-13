@@ -24,8 +24,7 @@ public class UserService {
     @Autowired
     private UserInterface userInterface;
 
-    @Autowired
-    private FeingRepository feingRepository;
+
 
 
     public ResponseEntity verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
@@ -74,10 +73,8 @@ public class UserService {
     public User UpdateById(Long id, User user){
         return userInterface.save(user);
     }
-    public ResponseJSONhandler delete(Long id){
+    public void delete(Long id){
         userInterface.deleteById(id);
-        ResponseJSONhandler responseJSONhandler = new ResponseJSONhandler("200", "Deletado", HttpStatus.OK);
-        return responseJSONhandler;
     }
     public User save(User user){
         return userInterface.save(user);
@@ -96,12 +93,7 @@ public class UserService {
        throw  new RuntimeException("deu ruim");
 
     }
-    public Boolean tokenValdition(String tkn){
-        return feingRepository.tokenValidation(tkn);
-    }
-    public String tokenTypeUser(String tkn){
-        return feingRepository.tokenTypeUser(tkn);
-    }
+
 
     }
 
