@@ -37,6 +37,7 @@ public class UserServiceTest {
     User usuarioMockadoCpfInvalido;
     User usuarioMockadoUserInvalido;
 
+    User user = mock(User.class);
 
     @BeforeEach
     void setUp() {
@@ -76,7 +77,6 @@ public class UserServiceTest {
 
     @Test
     public void listUniqClientTest() {
-        var user = mock(User.class);
 
         Mockito.when(userInterface.findById(ArgumentMatchers.eq(user.getId())))
                 .thenReturn(Optional.of(user));
@@ -87,7 +87,6 @@ public class UserServiceTest {
 
     @Test
     public void saveTest() {
-        var user = mock(User.class);
         Mockito.when(userInterface.save(ArgumentMatchers.eq(user)))
                 .thenReturn(user);
 
@@ -132,24 +131,25 @@ public class UserServiceTest {
      }
     @Test
     public void findbyEmailTest(){
-        var user = mock(User.class);
         Mockito.when(userInterface.findByEmail(ArgumentMatchers.eq(user.getEmail())))
                 .thenReturn(user);
     }
     @Test
     public void deleteTest(){
-        var user = mock(User.class);
         ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () ->
                 userService.delete(user.getId()));
         Assertions.assertThat(responseStatusException.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
     @Test
-    public void updateByIdTest(){
-        var user = mock(User.class);
+    public void testUpdateById(){
+        User user = new User();
+        user.setEmail("mateu9610@uorak.com");
+        user.setCpf("74468563001");
+        user.setName("jao");
+        user.setSenha("12345678aA@");
 
-        User res = userService.updateById(user.getId(), user);
-
+        Mockito.when(userService.updateById(user)).thenReturn(user);
+        User res = userService.updateById(user);
         assertEquals(user, res);
-
     }
 }

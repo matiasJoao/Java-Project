@@ -69,8 +69,11 @@ public class UserService {
     public User listUniqClient(Long id){
         return userInterface.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
     }
-    public User updateById(Long id, User user){
-
+    public User updateById(User user){
+        String pass;
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        pass = passwordEncoder.encode(user.getSenha());
+        user.setSenha(pass);
         return userInterface.save(user);
     }
     public void delete(Long id) throws Exception{

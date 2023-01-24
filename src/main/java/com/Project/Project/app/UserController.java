@@ -70,18 +70,14 @@ public class UserController {
     public UserLoginDTO loginUser(@RequestBody UserLoginDTO userLoginDTO ){
          return userService.loginClient(userLoginDTO);
     }
-    @PutMapping("/user/update/{id}")
+    @PutMapping("/user/update")
     @ResponseStatus(HttpStatus.OK)
-    public User Update(@PathVariable("id") Long id, @RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
+    public User Update(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
         if(feingService.tokenValdition(tkn)){
             if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
                 throw new Forbiden();
             }
-            String pass;
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            pass = passwordEncoder.encode(user.getSenha());
-            user.setSenha(pass);
-            return userService.updateById(id, user);
+            return userService.updateById( user);
         }
         throw new Unauthorized();
     }
