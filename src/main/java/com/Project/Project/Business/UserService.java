@@ -5,7 +5,6 @@ import com.Project.Project.Business.CpfValidator.CpfValidator;
 import com.Project.Project.Business.Regex.RegexHelpers;
 import com.Project.Project.DataAcess.User;
 import com.Project.Project.DataAcess.Repositorys.UserInterface;
-import com.Project.Project.DataAcess.Repositorys.FeingRepository;
 import com.Project.Project.DTO.UserLoginDTO;
 import com.Project.Project.ResponseHandler.ResponseJSONhandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -64,17 +63,19 @@ public class UserService {
            }
     }
 
-    public List<User> ListClients(){
+    public List<User> listClients(){
         return userInterface.findAll();
     }
-    public Optional<User> ListUniqClient(Long id){
-        return userInterface.findById(id);
+    public User listUniqClient(Long id){
+        return userInterface.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
     }
-    public User UpdateById(Long id, User user){
+    public User updateById(Long id, User user){
+
         return userInterface.save(user);
     }
-    public void delete(Long id){
-        userInterface.deleteById(id);
+    public void delete(Long id) throws Exception{
+            listUniqClient(id);
+            userInterface.deleteById(id);
     }
     public User save(User user){
         return userInterface.save(user);

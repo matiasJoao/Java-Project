@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,15 +27,14 @@ public class UserController {
     FeingService feingService;
     @PostMapping
     @RequestMapping("/user/cadastro")
-    public ResponseEntity cadastro(@RequestBody @Valid User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
+    public ResponseEntity cadastro(@RequestBody @Valid User user ,@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn ) {
         if(feingService.tokenValdition(tkn)){
-
-            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+           if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
                 throw new Forbiden();
-            }
-            return userService.verifyEmailCpfNameSenha(user.getEmail(), user.getCpf(), user.getName(), user.getSenha(), user);
+           }
+           return userService.verifyEmailCpfNameSenha(user.getEmail(), user.getCpf(), user.getName(), user.getSenha(), user);
         }
-        throw new Unauthorized();
+       throw new Unauthorized();
     }
 
     @GetMapping
@@ -49,7 +47,7 @@ public class UserController {
                     throw new Forbiden();
                 }
 
-            return userService.ListClients();
+            return userService.listClients();
         }
 
         throw new Unauthorized();
@@ -62,7 +60,7 @@ public class UserController {
             if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
                 throw new Forbiden();
             }
-            return userService.ListUniqClient(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
+            return userService.listUniqClient(id);
         }
         throw new Unauthorized();
     }
@@ -83,7 +81,7 @@ public class UserController {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             pass = passwordEncoder.encode(user.getSenha());
             user.setSenha(pass);
-            return userService.UpdateById(id, user);
+            return userService.updateById(id, user);
         }
         throw new Unauthorized();
     }
@@ -106,9 +104,16 @@ public class UserController {
             if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
                 throw new Forbiden();
             }
-            FindId(id, tkn);
-            userService.delete(id);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            try{
+                userService.delete(id);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            catch (Exception e){
+                 ResponseJSONhandler responseJSONhandler = new ResponseJSONhandler(HttpStatus.BAD_REQUEST.toString(),"test",HttpStatus.BAD_REQUEST);
+                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler);
+            }
+
+
         }
         throw new Unauthorized();
     }
