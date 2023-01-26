@@ -1,6 +1,6 @@
-package com.Project.Project.Business;
+package com.Project.Project.business;
 
-import com.Project.Project.DataAcess.Repositorys.FeingRepository;
+import com.Project.Project.data_acess.repositorys.FeingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

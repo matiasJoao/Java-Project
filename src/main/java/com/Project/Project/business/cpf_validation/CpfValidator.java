@@ -1,6 +1,4 @@
-package com.Project.Project.Business.CpfValidator;
-
-import br.com.caelum.stella.validation.CPFValidator;
+package com.Project.Project.business.cpf_validation;
 
 import java.util.InputMismatchException;
 

@@ -1,5 +1,4 @@
-package com.Project.Project.DTO;
-import com.Project.Project.DataAcess.Depart;
+package com.Project.Project.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

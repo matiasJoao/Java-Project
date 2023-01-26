@@ -1,12 +1,12 @@
-package com.Project.Project.ServiceTest;
+package com.Project.Project.service_test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-import com.Project.Project.Business.UserService;
-import com.Project.Project.DataAcess.Repositorys.UserInterface;
-import com.Project.Project.DataAcess.User;
-import com.Project.Project.ResponseHandler.ResponseJSONhandler;
+import com.Project.Project.business.UserService;
+import com.Project.Project.data_acess.repositorys.UserInterface;
+import com.Project.Project.data_acess.User;
+import com.Project.Project.dto.ResponseDTO;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
@@ -76,7 +75,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void listUniqClientTest() {
+    public void testListUniqClient() {
 
         Mockito.when(userInterface.findById(ArgumentMatchers.eq(user.getId())))
                 .thenReturn(Optional.of(user));
@@ -86,7 +85,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void saveTest() {
+    public void testSave() {
         Mockito.when(userInterface.save(ArgumentMatchers.eq(user)))
                 .thenReturn(user);
 
@@ -97,45 +96,42 @@ public class UserServiceTest {
     }
 
     @Test
-    public void listClientsTest() {
+    public void testListClients() {
         var user = mock(User.class);
         Mockito.when(userInterface.findAll()).thenReturn(List.of(user));
     }
 
     @org.junit.jupiter.api.Test
-    public void verifyEmailCpfNameSenha() {
+    public void testVerifyEmailCpfNameSenha() {
 
 
         //----------------Teste OK---------------
 
-        ResponseEntity response = userService.verifyEmailCpfNameSenha(usuarioMockadoValido.getEmail(),
-                usuarioMockadoValido.getCpf(), usuarioMockadoValido.getName(), usuarioMockadoValido.getSenha(), usuarioMockadoValido);
-        ResponseJSONhandler responseJSONhandler = new ResponseJSONhandler("201", "Cadastrado", HttpStatus.CREATED);
-        assertEquals(ResponseEntity.status(HttpStatus.CREATED).body(responseJSONhandler), response);
+        ResponseDTO response = userService.verifyEmailCpfNameSenha(usuarioMockadoValido);
+        ResponseDTO responseDTO = new ResponseDTO("201", "Cadastrado", HttpStatus.CREATED);
+        assertEquals(responseDTO, response);
 
         // ----------------Teste CPF INVALIDO-----------------------
 
 
-      ResponseEntity response2 = userService.verifyEmailCpfNameSenha(usuarioMockadoCpfInvalido.getEmail(),
-              usuarioMockadoCpfInvalido.getCpf(), usuarioMockadoCpfInvalido.getName(), usuarioMockadoCpfInvalido.getSenha(), usuarioMockadoCpfInvalido );
-      ResponseJSONhandler responseJSONhandler2 = new ResponseJSONhandler("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
-      assertEquals(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler2), response2);
+        ResponseDTO response2 = userService.verifyEmailCpfNameSenha(usuarioMockadoCpfInvalido );
+      ResponseDTO responseDTO2 = new ResponseDTO("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
+      assertEquals(responseDTO2, response2);
 
       //---------------------Teste Usuario Invalido-------------------
 
 
-      ResponseEntity response3 = userService.verifyEmailCpfNameSenha(usuarioMockadoUserInvalido.getEmail(),
-              usuarioMockadoUserInvalido.getCpf(), usuarioMockadoUserInvalido.getName(), usuarioMockadoUserInvalido.getSenha(), usuarioMockadoUserInvalido );
-      ResponseJSONhandler responseJSONhandler3 = new ResponseJSONhandler("400", "USUARIO OU EMAIL OU SENHA INVALIDOS", HttpStatus.BAD_REQUEST);
-      assertEquals(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler3), response3);
+        ResponseDTO response3 = userService.verifyEmailCpfNameSenha( usuarioMockadoUserInvalido );
+      ResponseDTO responseDTO3 = new ResponseDTO("400", "USUARIO OU EMAIL OU SENHA INVALIDOS", HttpStatus.BAD_REQUEST);
+      assertEquals(responseDTO3, response3);
      }
     @Test
-    public void findbyEmailTest(){
+    public void testFindbyEmail(){
         Mockito.when(userInterface.findByEmail(ArgumentMatchers.eq(user.getEmail())))
                 .thenReturn(user);
     }
     @Test
-    public void deleteTest(){
+    public void testDelete(){
         ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () ->
                 userService.delete(user.getId()));
         Assertions.assertThat(responseStatusException.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -152,4 +148,5 @@ public class UserServiceTest {
         User res = userService.updateById(user);
         assertEquals(user, res);
     }
+
 }

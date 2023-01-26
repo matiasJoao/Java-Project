@@ -1,4 +1,4 @@
-package com.Project.Project.ResponseHandler;
+package com.Project.Project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @Data
-public class ResponseJSONhandler {
+public class ResponseDTO {
     private String cod;
     private String mensage;
     private HttpStatus httpStatus;

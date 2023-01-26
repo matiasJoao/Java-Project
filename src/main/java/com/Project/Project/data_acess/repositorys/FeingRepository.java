@@ -1,4 +1,4 @@
-package com.Project.Project.DataAcess.Repositorys;
+package com.Project.Project.data_acess.repositorys;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;

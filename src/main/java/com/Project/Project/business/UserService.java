@@ -1,12 +1,12 @@
-package com.Project.Project.Business;
+package com.Project.Project.business;
 
 
-import com.Project.Project.Business.CpfValidator.CpfValidator;
-import com.Project.Project.Business.Regex.RegexHelpers;
-import com.Project.Project.DataAcess.User;
-import com.Project.Project.DataAcess.Repositorys.UserInterface;
-import com.Project.Project.DTO.UserLoginDTO;
-import com.Project.Project.ResponseHandler.ResponseJSONhandler;
+import com.Project.Project.business.cpf_validation.CpfValidator;
+import com.Project.Project.business.regex.RegexHelpers;
+import com.Project.Project.data_acess.User;
+import com.Project.Project.data_acess.repositorys.UserInterface;
+import com.Project.Project.dto.UserLoginDTO;
+import com.Project.Project.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,40 +26,33 @@ public class UserService {
 
 
 
-    public ResponseEntity verifyEmailCpfNameSenha(String email, String cpf, String name, String senha, User user){
-           Boolean verifyEmail, verifyCpf, verifyName, verifySenha;
+    public ResponseDTO verifyEmailCpfNameSenha(User user){
+           Boolean verifyEmail,  verifyName, verifySenha;
            String pass;
-           ResponseJSONhandler responseJSONhandler;
-
+           ResponseDTO responseDTO;
            RegexHelpers regexHelpers = new RegexHelpers();
-
-
-
-           verifyName = regexHelpers.nomeValidation(name);
-           verifyEmail = regexHelpers.email(email);
-         //  verifyCpf = regexHelpers.cpfValidation(cpf);
-           verifySenha = regexHelpers.senhaValidation(senha);
+           verifyName = regexHelpers.nomeValidation(user.getName());
+           verifyEmail = regexHelpers.email(user.getEmail());
+           verifySenha = regexHelpers.senhaValidation(user.getSenha());
 
 
            if (verifyEmail && verifyName && verifySenha) {
                CpfValidator cpfValidator = new CpfValidator();
-               Boolean verify = cpfValidator.isCPF(cpf);
+               Boolean verify = cpfValidator.isCPF(user.getCpf());
                if (verify) {
                    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                    pass = passwordEncoder.encode(user.getSenha());
                    user.setSenha(pass);
                    userInterface.save(user);
-                   responseJSONhandler = new ResponseJSONhandler("201", "Cadastrado", HttpStatus.CREATED);
-                   return ResponseEntity.status(HttpStatus.CREATED).body(responseJSONhandler);
+                   return responseDTO = new ResponseDTO("201", "Cadastrado", HttpStatus.CREATED);
 
                } else {
-                   responseJSONhandler = new ResponseJSONhandler("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
-                   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler);
+                   return  responseDTO = new ResponseDTO("400", "CPF INVALIDO", HttpStatus.BAD_REQUEST);
                }
            }
            else {
-               responseJSONhandler = new ResponseJSONhandler("400", "USUARIO OU EMAIL OU SENHA INVALIDOS", HttpStatus.BAD_REQUEST);
-               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseJSONhandler);
+              return responseDTO = new ResponseDTO("400", "USUARIO OU EMAIL OU SENHA INVALIDOS", HttpStatus.BAD_REQUEST);
+
            }
     }
 
@@ -95,6 +88,12 @@ public class UserService {
 
         }
        throw  new RuntimeException("deu ruim");
+
+    }
+    public User updateEmail (Long id, String email){
+        User user = listUniqClient(id);
+        user.setEmail(email);
+        return userInterface.save(user);
 
     }
 

@@ -1,4 +1,4 @@
-package com.Project.Project.DataAcess;
+package com.Project.Project.data_acess;
 
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
