@@ -90,7 +90,6 @@ public class UserServiceTest {
                 .thenReturn(user);
 
         Object testUser = userService.save(user);
-
         assertEquals(user, testUser);
 
     }
@@ -103,6 +102,7 @@ public class UserServiceTest {
 
     @org.junit.jupiter.api.Test
     public void testVerifyEmailCpfNameSenha() {
+
 
 
         //----------------Teste OK---------------
@@ -132,6 +132,7 @@ public class UserServiceTest {
     }
     @Test
     public void testDelete(){
+
         ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () ->
                 userService.delete(user.getId()));
         Assertions.assertThat(responseStatusException.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -143,10 +144,19 @@ public class UserServiceTest {
         user.setCpf("74468563001");
         user.setName("jao");
         user.setSenha("12345678aA@");
-
-        Mockito.when(userService.updateById(user)).thenReturn(user);
+        Mockito.when(userInterface.save(user)).thenReturn(user);
         User res = userService.updateById(user);
         assertEquals(user, res);
     }
 
+    @Test
+    public void testUpdateEmail(){
+            Mockito.when(userInterface.findById(user.getId())).thenReturn(Optional.of(user));
+            Mockito.when(userInterface.save(user)).thenReturn(user);
+            User res = userService.updateEmail(user.getId(), user.getEmail());
+            assertEquals(user, res);
+    }
+
+
 }
+

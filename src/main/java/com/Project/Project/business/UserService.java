@@ -9,7 +9,6 @@ import com.Project.Project.dto.UserLoginDTO;
 import com.Project.Project.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserInterface userInterface;
-
-
 
 
     public ResponseDTO verifyEmailCpfNameSenha(User user){

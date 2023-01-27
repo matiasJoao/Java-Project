@@ -24,11 +24,10 @@ public class UserController {
     FeingService feingService;
 
 
-    @PostMapping
-    @RequestMapping("/user/cadastro")
+    @PostMapping("/user/cadastro")
     public ResponseEntity cadastro(@RequestBody @Valid User user ,@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn ) {
         if(feingService.tokenValdition(tkn)){
-           if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+           if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                 throw new Forbiden();
            }
             ResponseDTO responseDTO = userService.verifyEmailCpfNameSenha(user);
@@ -44,7 +43,7 @@ public class UserController {
     public List<User> listUser(@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
         if(feingService.tokenValdition(tkn)){
 
-                if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+                if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                     throw new Forbiden();
                 }
 
@@ -58,7 +57,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public User findId(@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
         if(feingService.tokenValdition(tkn)){
-            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+            if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                 throw new Forbiden();
             }
             return userService.listUniqClient(id);
@@ -75,7 +74,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public User update(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn) {
         if(feingService.tokenValdition(tkn)){
-            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+            if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                 throw new Forbiden();
             }
             return userService.updateById( user);
@@ -85,7 +84,7 @@ public class UserController {
     @PatchMapping("/user/updateEmail/{id}/{email}")
     public User updateEmail(@PathVariable("id") Long id, @PathVariable("email") String email, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
         if(feingService.tokenValdition(tkn)){
-            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+            if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                 throw new Forbiden();
             }
            return userService.updateEmail(id, email);
@@ -96,7 +95,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity delete (@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION)String tkn){
         if(feingService.tokenValdition(tkn)){
-            if(feingService.tokenTypeUser(tkn).equalsIgnoreCase("cliente") || feingService.tokenTypeUser(tkn).equalsIgnoreCase("fornecedor")){
+            if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
                 throw new Forbiden();
             }
             try{
