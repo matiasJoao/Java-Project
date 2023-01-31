@@ -38,6 +38,8 @@ public class UserServiceTest {
 
     User user = mock(User.class);
 
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -92,6 +94,7 @@ public class UserServiceTest {
         Object testUser = userService.save(user);
         assertEquals(user, testUser);
 
+
     }
 
     @Test
@@ -127,6 +130,10 @@ public class UserServiceTest {
      }
     @Test
     public void testFindbyEmail(){
+//       User user1 = testEntityManager.persist( new User(1L, null, "Joao", "joao@email", "123", "013"));
+//
+//       User user2 = userInterface.findByEmail(user1.getEmail());
+//       assertEquals(user1, user2);
         Mockito.when(userInterface.findByEmail(ArgumentMatchers.eq(user.getEmail())))
                 .thenReturn(user);
     }
