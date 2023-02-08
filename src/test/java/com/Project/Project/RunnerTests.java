@@ -7,12 +7,9 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "src/test/resources/features",
-        plugin = {"pretty", "html:target/cucumber-reports/html/cucumber-html.html"},
-        snippets = CucumberOptions.SnippetType.CAMELCASE,
-        dryRun = false,
-        glue = "com.Project.Project",
-        tags = "@PostControllerTest")
+        plugin = {"json:target/reports/CucumberReport.json", "pretty"},
+        snippets = CucumberOptions.SnippetType.UNDERSCORE,
+        glue = "com.Project.Project.steps")
 public class RunnerTests {
-
 
 }

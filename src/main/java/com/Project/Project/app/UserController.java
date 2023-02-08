@@ -26,10 +26,10 @@ public class UserController {
 
     @PostMapping("/user/cadastro")
     public ResponseEntity cadastro(@RequestBody @Valid User user ,@RequestHeader(HttpHeaders.AUTHORIZATION)String tkn ) {
-        if(feingService.tokenValdition(tkn)){
-           if(!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")){
+        if(feingService.tokenValdition(tkn)) {
+            if (!feingService.tokenTypeUser(tkn).equalsIgnoreCase("admin")) {
                 throw new Forbiden();
-           }
+            }
             ResponseDTO responseDTO = userService.verifyEmailCpfNameSenha(user);
             return ResponseEntity.status(responseDTO.getHttpStatus()).body(responseDTO);
 

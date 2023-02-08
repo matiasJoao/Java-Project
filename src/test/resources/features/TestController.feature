@@ -1,7 +1,8 @@
 # language: pt
 
-  Funcionalidade: Testando End-Points do Controller
-    @PostControllerTest
-     Cenario: Cadastro de usuario
-      Dado : Que eu dou um post na api com o valor do usuario
-      Entao : Retorna o status "401"
+Funcionalidade: Testando End-Points do Controller
+  Cenario: Cadastro de usuario
+    Dado Que eu tenho um usuario qualquer com role de admin
+    Quando Faco um requisicao de cadastro
+    Entao Devo receber o status "201"
+
